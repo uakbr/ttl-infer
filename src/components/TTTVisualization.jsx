@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 // Main app component
@@ -29,7 +29,7 @@ const TTTVisualization = () => {
   // Apply theme to body
   useEffect(() => {
     document.body.classList.toggle('dark-theme', darkMode);
-    document.body.classList.toggle('light-theme', !darkMode); // Add light theme class too
+    document.body.classList.toggle('light-theme', !darkMode);
     return () => {
       document.body.classList.remove('dark-theme', 'light-theme');
     };
@@ -46,10 +46,10 @@ const TTTVisualization = () => {
 
   return (
     <div className={`app-container ${darkMode ? 'dark-theme' : 'light-theme'}`}>
-      {/* Streamlined header with theme toggle */}
+      {/* Modern header with theme toggle */}
       <header className="app-header">
         <div className="header-content">
-          <h1 className="title">TTT Visualization</h1> {/* Shortened Title */}
+          <h1 className="app-title">TTT Visualization</h1>
 
           <div className="header-controls">
             <button
@@ -140,42 +140,46 @@ const IntroSection = ({ darkMode }) => {
   return (
     <section className="section intro-section">
       <div className="section-card">
-        <h2>Learning to (Learn at Test Time)</h2>
-        <h3>RNNs with Expressive Hidden States</h3>
+        <div className="intro-header">
+          <h2>Learning to (Learn at Test Time)</h2>
+          <h3>RNNs with Expressive Hidden States</h3>
+        </div>
 
         <div className="content-grid intro-grid">
-          <div className="text-column">
+          <div className="intro-text">
             <div className="highlight-box">
               <h3>The Core Idea</h3>
-              <p><strong>Problem:</strong> Transformers scale quadratically with context length (expensive), while traditional RNNs struggle to effectively use long contexts due to fixed-size, less expressive hidden states.</p>
-              <p><strong>TTT Solution:</strong> Create RNN-like layers with <strong>linear complexity</strong> but <strong>expressive hidden states</strong>. Achieve this by making the hidden state a machine learning model (e.g., Linear, MLP) that is continuously updated (trained) on the input sequence itself during inference (test time).</p>
+              <p><strong>Problem:</strong> Transformers scale quadratically with context length, while traditional RNNs struggle with long contexts due to fixed-size hidden states.</p>
+              <p><strong>Solution:</strong> TTT creates RNN-like architectures with <strong>linear complexity</strong> but with <strong>expressive hidden states</strong> that learn during inference.</p>
             </div>
 
-            <div className="features-grid">
+            <div className="card-grid">
               <div className="feature-card">
-                <h4><span className="icon-inline">⚡</span> Linear Complexity</h4>
-                <p>O(n) scaling like RNNs, efficient for long sequences.</p>
+                <div className="feature-icon">⚡</div>
+                <h4>Linear Complexity</h4>
+                <p>O(n) scaling like RNNs, making it efficient for processing very long sequences.</p>
               </div>
               <div className="feature-card">
-                <h4><span className="icon-inline">🧠</span> Expressive Hidden States</h4>
-                <p>Hidden state is a model (W) that learns from the sequence.</p>
+                <div className="feature-icon">🧠</div>
+                <h4>Dynamic Hidden State</h4>
+                <p>Hidden state is an actual model (W) that learns from the sequence as it processes it.</p>
               </div>
               <div className="feature-card">
-                <h4><span className="icon-inline">🔄</span> Self-Supervised Update</h4>
-                <p>Hidden state W updates via gradient descent on a self-supervised task (e.g., reconstruction).</p>
+                <div className="feature-icon">🔄</div>
+                <h4>Self-Supervised Update</h4>
+                <p>Hidden state updates via gradient descent on a self-supervised task during inference.</p>
               </div>
               <div className="feature-card">
-                <h4><span className="icon-inline">📈</span> Long Context Performance</h4>
-                <p>Continues to improve performance as context length increases (tested up to 32k+).</p>
+                <div className="feature-icon">📈</div>
+                <h4>Long Context Performance</h4>
+                <p>Continues improving as context length increases, tested up to 32k+ tokens.</p>
               </div>
             </div>
           </div>
 
-          <div className="visual-column">
-            <div className="diagram-container">
-              <TTTDiagram darkMode={darkMode} />
-              <p className="diagram-caption">Fig 1: TTT Layer Concept. The hidden state (W) is updated using the input token (xₜ) via a gradient step (Update Rule), then used to predict the output (zₜ).</p>
-            </div>
+          <div className="intro-visual">
+            <ModernTTTDiagram darkMode={darkMode} />
+            <p className="diagram-caption">Fig 1: TTT Layer Architecture. The hidden state (W) is updated using the input token (xₜ) and then used to predict the output (zₜ).</p>
           </div>
         </div>
       </div>
@@ -183,54 +187,57 @@ const IntroSection = ({ darkMode }) => {
   );
 };
 
-// Simple TTT Diagram (Refined)
-const TTTDiagram = ({ darkMode }) => {
+// Modern TTT Diagram
+const ModernTTTDiagram = ({ darkMode }) => {
   const colors = {
-    bg: darkMode ? '#1e1e2e' : '#eff1f5', // Use base background
-    stroke: darkMode ? '#89b4fa' : '#1e66f5', // Blue
-    fill: darkMode ? '#313244' : '#ccd0da', // Surface0
-    text: darkMode ? '#cdd6f4' : '#4c4f69', // Text
-    highlight: darkMode ? '#f5c2e7' : '#ea76cb', // Pink
-    arrow: darkMode ? '#a6adc8' : '#6c6f85', // Subtext0
+    bg: darkMode ? '#1e293b' : '#f8fafc',
+    stroke: darkMode ? '#4361ee' : '#4361ee', // Primary blue
+    fill: darkMode ? '#334155' : '#e2e8f0',   // Surface color
+    text: darkMode ? '#f8fafc' : '#1e293b',   // Text color
+    highlight: darkMode ? '#f72585' : '#f72585', // Accent color
+    arrow: darkMode ? '#94a3b8' : '#64748b',   // Muted color
   };
 
   return (
     <svg width="100%" viewBox="0 0 450 300" className="ttt-diagram">
-      {/* Nodes */}
+      {/* Background */}
+      <rect x="0" y="0" width="450" height="300" fill={colors.bg} rx="12" />
+
+      {/* Nodes - Modern Style */}
       <g className="input-token" transform="translate(50, 200)">
-        <rect x="0" y="0" width="100" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="1.5" rx="5" />
+        <rect x="0" y="0" width="100" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="2" rx="8" />
         <text x="50" y="20" textAnchor="middle" fill={colors.text} fontSize="14" fontWeight="bold">Input</text>
-        <text x="50" y="40" textAnchor="middle" fill={colors.text} fontSize="12" fontFamily="monospace">x<tspan baselineShift="sub">t</tspan></text>
+        <text x="50" y="40" textAnchor="middle" fill={colors.text} fontSize="14" fontFamily="monospace">xₜ</text>
       </g>
 
       <g className="hidden-state" transform="translate(50, 50)">
-         <rect x="0" y="0" width="100" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="1.5" rx="5" />
+        <rect x="0" y="0" width="100" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="2" rx="8" />
         <text x="50" y="20" textAnchor="middle" fill={colors.text} fontSize="14" fontWeight="bold">Hidden State</text>
-        <text x="50" y="40" textAnchor="middle" fill={colors.text} fontSize="12" fontFamily="monospace">W<tspan baselineShift="sub">t</tspan></text>
+        <text x="50" y="40" textAnchor="middle" fill={colors.text} fontSize="14" fontFamily="monospace">Wₜ</text>
       </g>
 
-       <g className="prev-hidden-state" transform="translate(50, 125)">
-         <rect x="0" y="0" width="100" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="1.5" rx="5" strokeDasharray="3 3"/>
-        <text x="50" y="20" textAnchor="middle" fill={colors.subtext0} fontSize="14" fontWeight="bold">Prev State</text>
-        <text x="50" y="40" textAnchor="middle" fill={colors.subtext0} fontSize="12" fontFamily="monospace">W<tspan baselineShift="sub">t-1</tspan></text>
+      <g className="prev-hidden-state" transform="translate(50, 125)">
+        <rect x="0" y="0" width="100" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="1.5" rx="8" strokeDasharray="3 3"/>
+        <text x="50" y="20" textAnchor="middle" fill={colors.text} fontSize="14" fontWeight="bold">Prev State</text>
+        <text x="50" y="40" textAnchor="middle" fill={colors.text} fontSize="14" fontFamily="monospace">Wₜ₋₁</text>
       </g>
 
       <g className="update-rule" transform="translate(200, 125)">
-        <rect x="0" y="0" width="150" height="50" fill={colors.fill} stroke={colors.highlight} strokeWidth="1.5" rx="5" />
+        <rect x="0" y="0" width="150" height="50" fill={colors.fill} stroke={colors.highlight} strokeWidth="2" rx="8" />
         <text x="75" y="20" textAnchor="middle" fill={colors.text} fontSize="14" fontWeight="bold">Update Rule</text>
-        <text x="75" y="40" textAnchor="middle" fill={colors.text} fontSize="10" fontFamily="monospace">W<tspan baselineShift="sub">t</tspan> = W<tspan baselineShift="sub">t-1</tspan> - η∇ℓ(W<tspan baselineShift="sub">t-1</tspan>; x<tspan baselineShift="sub">t</tspan>)</text>
+        <text x="75" y="40" textAnchor="middle" fill={colors.text} fontSize="12" fontFamily="monospace">Wₜ = Wₜ₋₁ - η∇ℓ(Wₜ₋₁; xₜ)</text>
       </g>
 
       <g className="output-rule" transform="translate(200, 50)">
-        <rect x="0" y="0" width="150" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="1.5" rx="5" />
+        <rect x="0" y="0" width="150" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="2" rx="8" />
         <text x="75" y="20" textAnchor="middle" fill={colors.text} fontSize="14" fontWeight="bold">Output Rule</text>
-         <text x="75" y="40" textAnchor="middle" fill={colors.text} fontSize="12" fontFamily="monospace">z<tspan baselineShift="sub">t</tspan> = f(x<tspan baselineShift="sub">t</tspan>; W<tspan baselineShift="sub">t</tspan>)</text>
+        <text x="75" y="40" textAnchor="middle" fill={colors.text} fontSize="12" fontFamily="monospace">zₜ = f(xₜ; Wₜ)</text>
       </g>
 
-       <g className="output-token" transform="translate(380, 50)">
-        <rect x="0" y="0" width="70" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="1.5" rx="5" />
+      <g className="output-token" transform="translate(380, 50)">
+        <rect x="0" y="0" width="70" height="50" fill={colors.fill} stroke={colors.stroke} strokeWidth="2" rx="8" />
         <text x="35" y="20" textAnchor="middle" fill={colors.text} fontSize="14" fontWeight="bold">Output</text>
-        <text x="35" y="40" textAnchor="middle" fill={colors.text} fontSize="12" fontFamily="monospace">z<tspan baselineShift="sub">t</tspan></text>
+        <text x="35" y="40" textAnchor="middle" fill={colors.text} fontSize="14" fontFamily="monospace">zₜ</text>
       </g>
 
       {/* Connections */}
@@ -526,98 +533,92 @@ const NeuralNetworkAnimation = ({ darkMode, modelType, speed, paused }) => {
 };
 
 
-// TTT Process Section (Refined)
+// TTT Process Section (Redesigned)
 const TTTProcessSection = ({ darkMode }) => {
   return (
     <section className="section process-section">
       <div className="section-card">
         <h2>The Test-Time Training Process</h2>
-        <p className="section-subtitle">How the hidden state learns from the sequence during inference.</p>
+        <p className="section-subtitle">How the hidden state learns from the sequence during inference</p>
 
-        <div className="process-visualization">
-          <TTTProcessVisualization darkMode={darkMode} />
+        <div className="process-flow">
+          <SimplifiedProcessVisualization darkMode={darkMode} />
         </div>
-
-        <h3>Key Steps in the Inner Loop</h3>
 
         <div className="process-steps">
-          <div className="step-card">
-            <div className="step-number">1</div>
-            <div className="step-content">
-              <h4>Receive Input Token (x<tspan baselineShift="sub">t</tspan>)</h4>
-              <p>The next token in the sequence arrives.</p>
+          <h3>Key Steps in the TTT Loop</h3>
+          
+          <div className="steps-container">
+            <div className="step-card">
+              <div className="step-number">1</div>
+              <div className="step-content">
+                <h4>Receive Input Token</h4>
+                <p>The current token xₜ in the sequence arrives at the TTT layer.</p>
+              </div>
             </div>
-          </div>
 
-          <div className="step-card">
-            <div className="step-number">2</div>
-            <div className="step-content">
-              <h4>Compute Self-Supervised Loss (ℓ)</h4>
-              <p>A loss is calculated based on how well the *current* hidden state (W<tspan baselineShift="sub">t-1</tspan>) performs a self-supervised task on x<tspan baselineShift="sub">t</tspan> (e.g., reconstructing masked parts of x<tspan baselineShift="sub">t</tspan>).</p>
+            <div className="step-card">
+              <div className="step-number">2</div>
+              <div className="step-content">
+                <h4>Compute Self-Supervised Loss</h4>
+                <p>Calculate a loss based on how well the current hidden state Wₜ₋₁ performs on the input token (e.g., reconstruction loss).</p>
+              </div>
             </div>
-          </div>
 
-          <div className="step-card">
-            <div className="step-number">3</div>
-            <div className="step-content">
-              <h4>Calculate Gradient (∇ℓ)</h4>
-              <p>The gradient of the loss with respect to the *previous* hidden state W<tspan baselineShift="sub">t-1</tspan> is computed: ∇ℓ(W<tspan baselineShift="sub">t-1</tspan>; x<tspan baselineShift="sub">t</tspan>).</p>
+            <div className="step-card">
+              <div className="step-number">3</div>
+              <div className="step-content">
+                <h4>Calculate Gradient</h4>
+                <p>Compute the gradient of the loss with respect to the previous hidden state: ∇ℓ(Wₜ₋₁; xₜ).</p>
+              </div>
             </div>
-          </div>
 
-          <div className="step-card">
-            <div className="step-number">4</div>
-            <div className="step-content">
-              <h4>Update Hidden State (W<tspan baselineShift="sub">t</tspan>)</h4>
-              <p>The hidden state is updated using one step of gradient descent: W<tspan baselineShift="sub">t</tspan> = W<tspan baselineShift="sub">t-1</tspan> - η∇ℓ.</p>
+            <div className="step-card">
+              <div className="step-number">4</div>
+              <div className="step-content">
+                <h4>Update Hidden State</h4>
+                <p>Apply a gradient descent step to update the hidden state: Wₜ = Wₜ₋₁ - η∇ℓ</p>
+              </div>
             </div>
-          </div>
 
-           <div className="step-card">
-            <div className="step-number">5</div>
-            <div className="step-content">
-              <h4>Generate Output (z<tspan baselineShift="sub">t</tspan>)</h4>
-              <p>The *updated* hidden state W<tspan baselineShift="sub">t</tspan> is used with the input x<tspan baselineShift="sub">t</tspan> to produce the output token z<tspan baselineShift="sub">t</tspan> = f(x<tspan baselineShift="sub">t</tspan>; W<tspan baselineShift="sub">t</tspan>).</p>
+            <div className="step-card">
+              <div className="step-number">5</div>
+              <div className="step-content">
+                <h4>Generate Output</h4>
+                <p>Use the updated hidden state Wₜ with input xₜ to produce the output zₜ = f(xₜ; Wₜ).</p>
+              </div>
             </div>
           </div>
         </div>
-         <p className="process-note">This entire inner loop (steps 1-5) happens for *every token* during inference. The outer loop (standard model training) learns the initial W<tspan baselineShift="sub">0</tspan>, the function f, the learning rate η, and the parameters of the self-supervised task ℓ.</p>
+
+        <div className="process-summary">
+          <h3>The TTT Advantage</h3>
+          <div className="card-grid">
+            <div className="info-card">
+              <h4>📈 Continuous Learning</h4>
+              <p>TTT's hidden state is a model itself that keeps learning during inference, adapting to the specific content in the sequence.</p>
+            </div>
+            <div className="info-card">
+              <h4>⚡ Linear Complexity</h4>
+              <p>Unlike Transformer's quadratic complexity, TTT scales linearly with sequence length, making it efficient for long contexts.</p>
+            </div>
+            <div className="info-card">
+              <h4>🔄 Self-Supervision</h4>
+              <p>The hidden state updates using a self-supervised task (no external labels needed), learning patterns directly from the data.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
 };
 
-
-// TTT Process Visualization Component (Refined)
-const TTTProcessVisualization = ({ darkMode }) => {
-  const [time, setTime] = useState(0);
-  const [tokens, setTokens] = useState([]);
-  const tokenStream = useRef("TTT makes the hidden state a model itself updated via self-supervised learning".split(/\s+/));
+// Simplified Process Visualization Component
+const SimplifiedProcessVisualization = ({ darkMode }) => {
   const canvasRef = useRef(null);
+  const [time, setTime] = useState(0);
   const requestRef = useRef(null);
   const previousTimeRef = useRef(null);
-  const [hiddenStateMatrix, setHiddenStateMatrix] = useState([]);
-  const matrixSize = 5; // Size of the visualized matrix
-
-  // Initialize hidden state matrix
-  useEffect(() => {
-    const initialMatrix = Array(matrixSize).fill(0).map(() =>
-      Array(matrixSize).fill(0).map(() => (Math.random() - 0.5) * 0.8) // Initial random weights
-    );
-    setHiddenStateMatrix(initialMatrix);
-  }, []);
-
-  // Initialize tokens
-  useEffect(() => {
-    const initialTokens = tokenStream.current.map((word, index) => ({
-      id: index,
-      text: word.replace(/[.,;]/g, ''),
-      processed: false,
-      highlight: false,
-      gradientMagnitude: 0,
-    }));
-    setTokens(initialTokens);
-  }, []);
 
   // Animation loop
   useEffect(() => {
@@ -626,434 +627,7 @@ const TTTProcessVisualization = ({ darkMode }) => {
         previousTimeRef.current = timestamp;
       }
       const deltaTime = timestamp - previousTimeRef.current;
-      setTime(prevTime => prevTime + deltaTime * 0.0008); // Slightly faster animation
-      previousTimeRef.current = timestamp;
-      requestRef.current = requestAnimationFrame(animate);
-    };
-    requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
-  }, []);
-
-  // Process tokens and update visualization
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || tokens.length === 0) return;
-
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-
-    // Clear canvas
-    ctx.clearRect(0, 0, width, height);
-
-    // Background
-    ctx.fillStyle = darkMode ? '#1e1e2e' : '#eff1f5';
-    ctx.fillRect(0, 0, width, height);
-
-    // --- Token Stream Visualization ---
-    const tokenSpacing = 75;
-    const tokenStartY = 50;
-    const maxVisibleTokens = Math.floor((width - 40) / tokenSpacing);
-    const totalAnimationCycle = tokens.length; // One full pass through tokens
-    const currentCycleTime = time % totalAnimationCycle;
-    const processIndex = Math.floor(currentCycleTime);
-    const processProgress = currentCycleTime - processIndex; // 0 to 1 progress within the current token
-
-    // Update token states
-    tokens.forEach((token, index) => {
-      token.processed = index < processIndex;
-      token.highlight = index === processIndex;
-      // Simulate gradient calculation during highlight phase
-      token.gradientMagnitude = token.highlight ? Math.sin(processProgress * Math.PI) : 0; // Gradient peaks mid-process
-    });
-
-    // Calculate visible range
-    const centerTokenIndex = processIndex;
-    const visibleStartIndex = Math.max(0, centerTokenIndex - Math.floor(maxVisibleTokens / 2));
-    const visibleEndIndex = Math.min(tokens.length, visibleStartIndex + maxVisibleTokens);
-    const offsetX = width / 2 - (centerTokenIndex - visibleStartIndex + 0.5) * tokenSpacing; // Center the current token
-
-    // Draw tokens
-    for (let i = visibleStartIndex; i < visibleEndIndex; i++) {
-      const token = tokens[i];
-      const x = offsetX + (i - visibleStartIndex) * tokenSpacing;
-      const y = tokenStartY;
-      const tokenWidth = Math.max(50, token.text.length * 7 + 10);
-
-      // Token Box
-      ctx.beginPath();
-      ctx.roundRect(x - tokenWidth / 2, y - 15, tokenWidth, 30, 5);
-      ctx.lineWidth = token.highlight ? 2 : 1;
-      ctx.strokeStyle = token.highlight ? (darkMode ? '#f5c2e7' : '#ec4899') // Pink
-                       : token.processed ? (darkMode ? '#89b4fa' : '#1e66f5') // Blue
-                       : (darkMode ? '#6c7086' : '#9ca0b0'); // Overlay0
-      ctx.fillStyle = token.highlight ? (darkMode ? 'rgba(245, 194, 231, 0.2)' : 'rgba(234, 118, 203, 0.1)')
-                      : token.processed ? (darkMode ? 'rgba(137, 180, 250, 0.1)' : 'rgba(30, 102, 245, 0.05)')
-                      : (darkMode ? 'rgba(49, 50, 68, 0.5)' : 'rgba(204, 208, 218, 0.5)'); // Surface0 / Surface0
-      ctx.fill();
-      ctx.stroke();
-
-      // Token Text
-      ctx.fillStyle = darkMode ? '#cdd6f4' : '#4c4f69';
-      ctx.font = token.highlight ? 'bold 11px sans-serif' : '11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(token.text, x, y);
-
-      // --- Connections and Gradient ---
-      const hiddenStateCenterY = height * 0.65;
-      if (token.highlight) {
-        // Line to Gradient Symbol
-        ctx.beginPath();
-        ctx.moveTo(x, y + 15);
-        ctx.lineTo(x, y + 45);
-        ctx.strokeStyle = darkMode ? '#f5c2e7' : '#ec4899'; // Pink
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        // Gradient Symbol (∇ℓ) - pulsing
-        const gradientPulse = token.gradientMagnitude * 5;
-        ctx.fillStyle = darkMode ? '#f5c2e7' : '#ec4899';
-        ctx.font = `bold ${18 + gradientPulse}px monospace`;
-        ctx.fillText('∇ℓ', x, y + 65 + gradientPulse / 2);
-
-        // Line from Gradient to Hidden State
-        ctx.beginPath();
-        ctx.moveTo(x, y + 80 + gradientPulse);
-        ctx.lineTo(x, hiddenStateCenterY - 40); // Point towards matrix top
-        ctx.strokeStyle = darkMode ? '#f5c2e7' : '#ec4899';
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([4, 2]);
-        ctx.stroke();
-        ctx.setLineDash([]); // Reset dash pattern
-
-      } else if (token.processed) {
-         // Line indicating contribution to state (subtle)
-         ctx.beginPath();
-         ctx.moveTo(x, y + 15);
-         ctx.lineTo(x, hiddenStateCenterY - 40);
-         ctx.strokeStyle = darkMode ? 'rgba(137, 180, 250, 0.3)' : 'rgba(30, 102, 245, 0.2)'; // Faint Blue
-         ctx.lineWidth = 0.5;
-         ctx.stroke();
-      }
-    }
-
-    // --- Hidden State Matrix Visualization ---
-    const matrixTotalSize = matrixSize * 20; // Cell size = 20
-    const matrixStartX = width / 2 - matrixTotalSize / 2;
-    const matrixStartY = hiddenStateCenterY - matrixTotalSize / 2;
-
-    // Update matrix based on gradient magnitude of the highlighted token
-    const currentToken = tokens[processIndex];
-    const gradientEffect = currentToken?.gradientMagnitude * 0.1 || 0; // Max effect of 0.1
-
-    ctx.save(); // Save context for matrix drawing
-    ctx.translate(matrixStartX, matrixStartY);
-
-    // Draw Matrix Cells
-    for (let i = 0; i < matrixSize; i++) {
-      for (let j = 0; j < matrixSize; j++) {
-        // Apply gradient effect (simulate update) - make it slightly random which cells change
-        const shouldUpdate = Math.random() < processProgress * 0.5; // More likely to update as progress increases
-        const updateDirection = Math.random() > 0.5 ? 1 : -1;
-        const currentValue = hiddenStateMatrix[i][j] + (shouldUpdate ? gradientEffect * updateDirection : 0);
-        hiddenStateMatrix[i][j] = Math.max(-1, Math.min(1, currentValue)); // Clamp value
-
-        const value = hiddenStateMatrix[i][j];
-        const absValue = Math.abs(value);
-        const blueIntensity = Math.max(0, value);
-        const redIntensity = Math.max(0, -value);
-
-        // Interpolate between base and blue/red
-        const r = Math.round(darkMode ? 30 + redIntensity * (243 - 30) : 239 + redIntensity * (210 - 239));
-        const g = Math.round(darkMode ? 30 + blueIntensity * (137 - 30) : 239 + blueIntensity * (30 - 239));
-        const b = Math.round(darkMode ? 46 + blueIntensity * (180 - 46) : 245 + blueIntensity * (102 - 245));
-        const alpha = 0.3 + absValue * 0.6; // Base alpha + value intensity
-
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-        ctx.fillRect(j * 20, i * 20, 19, 19); // Cell size 20, gap 1
-
-        // Add subtle shimmer on update
-        if (shouldUpdate && gradientEffect > 0.01) {
-           ctx.fillStyle = darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
-           ctx.fillRect(j * 20, i * 20, 19, 19);
-        }
-      }
-    }
-    ctx.restore(); // Restore context
-
-    // Draw Matrix Border and Label
-    ctx.strokeStyle = darkMode ? '#b4befe' : '#7287fd'; // Lavender
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(matrixStartX - 5, matrixStartY - 5, matrixTotalSize + 10, matrixTotalSize + 10);
-    ctx.fillStyle = darkMode ? '#cdd6f4' : '#4c4f69';
-    ctx.font = 'bold 12px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Hidden State W (Model Weights)', width / 2, matrixStartY - 15);
-
-    // Draw Labels
-    ctx.fillStyle = darkMode ? '#a6adc8' : '#6c6f85'; // Subtext0
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Input Token Stream', width / 2, tokenStartY - 30);
-    if (currentToken?.highlight) {
-       ctx.fillStyle = darkMode ? '#f5c2e7' : '#ec4899'; // Pink
-       ctx.fillText(`Calculating Gradient ∇ℓ for "${currentToken.text}"`, width / 2, height - 50);
-       ctx.fillText(`Updating Hidden State W...`, width / 2, height - 30);
-    } else {
-       ctx.fillStyle = darkMode ? '#a6adc8' : '#6c6f85'; // Subtext0
-       ctx.fillText(`Waiting for next token...`, width / 2, height - 40);
-    }
-
-
-  }, [time, tokens, darkMode, hiddenStateMatrix]); // Rerun drawing when these change
-
-  return (
-    <canvas
-      ref={canvasRef}
-      width={800} // Wider canvas for stream
-      height={350}
-      className="process-canvas"
-    />
-  );
-};
-
-
-// Performance Section (Refined)
-const PerformanceSection = ({ darkMode }) => {
-  const [contextLength, setContextLength] = useState(32000);
-
-  // Performance data from Figure 2 (right panel)
-  const performanceData = [
-    { tokens: 128,  Transformer: 11.0, Mamba: 10.8, 'TTT-Linear': 10.7, 'TTT-MLP': 10.5 },
-    { tokens: 256,  Transformer: 10.8, Mamba: 10.6, 'TTT-Linear': 10.5, 'TTT-MLP': 10.3 },
-    { tokens: 512,  Transformer: 10.6, Mamba: 10.4, 'TTT-Linear': 10.3, 'TTT-MLP': 10.1 },
-    { tokens: 1000, Transformer: 10.4, Mamba: 10.2, 'TTT-Linear': 10.1, 'TTT-MLP': 9.9 },
-    { tokens: 2000, Transformer: 10.2, Mamba: 10.0, 'TTT-Linear': 9.9,  'TTT-MLP': 9.8 },
-    { tokens: 4000, Transformer: 9.9,  Mamba: 9.8,  'TTT-Linear': 9.7,  'TTT-MLP': 9.6 },
-    { tokens: 8000, Transformer: 9.6,  Mamba: 9.6,  'TTT-Linear': 9.5,  'TTT-MLP': 9.4 },
-    { tokens: 16000,Transformer: 9.2,  Mamba: 9.5,  'TTT-Linear': 9.2,  'TTT-MLP': 9.1 }, // Mamba plateaus
-    { tokens: 32000,Transformer: 8.8,  Mamba: 9.5,  'TTT-Linear': 9.0,  'TTT-MLP': 8.9 }  // TTT continues improving
-  ];
-
-  // Colors for the chart lines (Catppuccin)
-  const lineColors = {
-    Transformer: darkMode ? '#fab387' : '#fe640b', // Peach
-    Mamba: darkMode ? '#cba6f7' : '#8839ef',       // Mauve
-    'TTT-Linear': darkMode ? '#89dceb' : '#04a5e5', // Sky
-    'TTT-MLP': darkMode ? '#74c7ec' : '#209fb5'     // Sapphire
-  };
-
-  const tickColor = darkMode ? '#bac2de' : '#5c5f77'; // Subtext1
-  const labelColor = darkMode ? '#cdd6f4' : '#4c4f69'; // Text
-  const gridColor = darkMode ? '#313244' : '#ccd0da'; // Surface0
-
-  return (
-    <section className="section performance-section">
-      <div className="section-card">
-        <h2>Performance: Long Context Capability</h2>
-        <p className="section-subtitle">Comparing perplexity (lower is better) across different context lengths on the Books3 dataset (1.3B parameter models).</p>
-
-        <div className="chart-container">
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart
-              data={performanceData.filter(d => d.tokens <= contextLength)}
-              margin={{ top: 5, right: 30, left: 0, bottom: 25 }} // Adjusted margins
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-              <XAxis
-                dataKey="tokens"
-                type="number"
-                scale="log"
-                domain={[128, 32000]} // Fixed domain for log scale
-                ticks={[128, 256, 512, 1000, 2000, 4000, 8000, 16000, 32000]}
-                tickFormatter={(value) => value >= 1000 ? `${value/1000}k` : value}
-                label={{
-                  value: 'Context Length (Tokens, log scale)',
-                  position: 'insideBottom',
-                  offset: -15, // Adjusted offset
-                  fill: labelColor,
-                  fontSize: 12
-                }}
-                stroke={tickColor}
-                tick={{ fill: tickColor, fontSize: 11 }}
-              />
-              <YAxis
-                domain={[8.5, 11.5]} // Adjusted domain based on data
-                label={{
-                  value: 'Perplexity', // Simpler label
-                  angle: -90,
-                  position: 'insideLeft',
-                  offset: 10, // Adjusted offset
-                  fill: labelColor,
-                  fontSize: 12
-                }}
-                stroke={tickColor}
-                tick={{ fill: tickColor, fontSize: 11 }}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: darkMode ? 'rgba(30, 30, 46, 0.9)' : 'rgba(239, 241, 245, 0.9)', // Base/Base with alpha
-                  color: labelColor,
-                  border: `1px solid ${gridColor}`,
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  padding: '8px'
-                }}
-                itemStyle={{ color: labelColor }}
-                cursor={{ stroke: darkMode ? '#a6adc8' : '#6c6f85', strokeWidth: 1, strokeDasharray: "3 3" }} // Subtext0
-              />
-              <Legend
-                wrapperStyle={{
-                  color: labelColor,
-                  fontSize: '12px',
-                  paddingTop: '10px' // Add space below chart
-                }}
-                iconSize={10}
-              />
-              {Object.entries(lineColors).map(([name, color]) => (
-                 <Line
-                  key={name}
-                  type="monotone"
-                  dataKey={name}
-                  name={name}
-                  stroke={color}
-                  strokeWidth={2.5} // Slightly thicker lines
-                  dot={{ r: 3, fill: color, strokeWidth: 0 }}
-                  activeDot={{ r: 5, stroke: darkMode ? '#11111b' : '#dce0e8', strokeWidth: 2 }} // Crust/Crust
-                />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
-
-          <div className="context-slider">
-            <label htmlFor="contextRange">Max Context:</label>
-            <input
-              id="contextRange"
-              type="range"
-              min={512} // Start slider later for clarity
-              max={32000}
-              step={128} // Finer steps
-              value={contextLength}
-              onChange={(e) => setContextLength(Number(e.target.value))}
-              className="range-slider"
-            />
-            <span className="context-value">{contextLength >= 1000 ? `${(contextLength/1000).toFixed(1)}k` : contextLength}</span>
-          </div>
-        </div>
-
-        <div className="insights-grid">
-          <div className="insight-card">
-            <h4><span className="icon-inline">✅</span> TTT Advantage</h4>
-            <p>Both TTT-Linear and TTT-MLP outperform Mamba beyond 16k context, demonstrating better utilization of long-range information.</p>
-          </div>
-          <div className="insight-card">
-            <h4><span className="icon-inline">📉</span> Continuous Improvement</h4>
-            <p>Unlike Mamba, TTT models show continuously decreasing perplexity up to 32k context, similar to Transformers.</p>
-          </div>
-          <div className="insight-card">
-            <h4><span className="icon-inline">⚡</span> Linear Complexity</h4>
-            <p>TTT achieves this long-context performance with linear O(n) complexity, making it much more efficient than Transformers (O(n²)) for inference.</p>
-          </div>
-           <div className="insight-card">
-            <h4><span className="icon-inline">🐌</span> TTT-MLP Latency</h4>
-            <p>While TTT-MLP shows slightly better perplexity, its update step is more complex, leading to higher latency than TTT-Linear (See Technical Details).</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-
-// Technical Details Section (Refined)
-const TechnicalSection = ({ darkMode }) => {
-  return (
-    <section className="section technical-section">
-      <div className="section-card">
-        <h2>Technical Details & Optimizations</h2>
-        <p className="section-subtitle">Making Test-Time Training efficient on modern hardware.</p>
-
-        <div className="content-grid tech-grid">
-          <div className="text-column">
-            <div className="tech-explanation">
-              <h3>Efficiency Enhancements</h3>
-
-              <div className="tech-card">
-                <h4>Mini-Batch TTT (Parallelization)</h4>
-                <p>Instead of updating the hidden state W after every single token (Online GD), updates are computed in parallel for a mini-batch of `b` tokens (e.g., b=16) using the state from the *start* of the batch (W<tspan baselineShift="sub">t-β</tspan>). The final state W<tspan baselineShift="sub">t</tspan> is then calculated via a cumulative sum. This significantly improves GPU utilization.</p>
-                 <div className="formula-box">
-                  <span>Parallel Gradient Calculation:</span>
-                  <div className="math-formula">
-                    G<tspan baselineShift="sub">i</tspan> = ∇ℓ(W<tspan baselineShift="sub">start</tspan>; x<tspan baselineShift="sub">i</tspan>)   for i in batch
-                  </div>
-                 </div>
-              </div>
-
-              <div className="tech-card">
-                <h4>Dual Form Computation (Hardware Acceleration)</h4>
-                <p>Avoids explicitly materializing intermediate gradients (G<tspan baselineShift="sub">t</tspan>) and states (W<tspan baselineShift="sub">t</tspan>) within a batch. It reformulates the update and output calculation using highly optimized matrix-matrix multiplications (matmuls), leveraging hardware like TensorCores.</p>
-                <div className="formula-box">
-                  <span>Simplified Dual Update (Linear Case):</span>
-                  <div className="math-formula">
-                    W<tspan baselineShift="sub">batch_end</tspan> ≈ W<tspan baselineShift="sub">start</tspan> - η (W<tspan baselineShift="sub">start</tspan>X - X) Xᵀ
-                  </div>
-                  <small>X contains batch tokens. Outputs Z are also computed via matmuls.</small>
-                </div>
-                 <p>Result: <strong>~5x faster</strong> training/inference compared to the naive "primal" form.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="visual-column">
-            <div className="optimization-visual">
-              <DualFormVisualization darkMode={darkMode} />
-               <p className="diagram-caption">Fig: Primal vs. Dual Form. Dual form leverages large matrix operations for efficiency.</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="limitations-section">
-          <h3>Limitations & Future Directions</h3>
-
-          <div className="limitations-grid">
-            <div className="limitation-card">
-              <h4><span className="icon-inline">⏱️</span> Wall-Clock Time</h4>
-              <p>TTT-MLP, despite FLOP efficiency, can have higher latency than optimized RNNs like Mamba due to the complexity of the inner-loop update (MLP forward/backward pass per batch).</p>
-            </div>
-            <div className="limitation-card">
-              <h4><span className="icon-inline">💾</span> Memory Bandwidth</h4>
-              <p>The dual form relies heavily on matrix operations, which can be memory bandwidth-intensive, potentially bottlenecking performance on some systems.</p>
-            </div>
-             <div className="limitation-card">
-              <h4><span className="icon-inline">🔮</span> Future: Scalability</h4>
-              <p>Exploring TTT with even larger hidden state models (e.g., small Transformers) and context lengths (millions of tokens) is a key research direction.</p>
-            </div>
-            <div className="limitation-card">
-              <h4><span className="icon-inline">⚙️</span> Future: Optimizers</h4>
-              <p>Integrating more advanced optimizers (e.g., Adam) into the inner loop instead of plain SGD could potentially improve learning quality.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-
-// Dual Form Visualization (Refined)
-const DualFormVisualization = ({ darkMode }) => {
-  const [time, setTime] = useState(0);
-  const canvasRef = useRef(null);
-  const requestRef = useRef(null);
-  const previousTimeRef = useRef(null);
-
-  // Animation loop
-  useEffect(() => {
-    const animate = (timestamp) => {
-      if (previousTimeRef.current === null) previousTimeRef.current = timestamp;
-      const deltaTime = timestamp - previousTimeRef.current;
-      setTime(prevTime => prevTime + deltaTime * 0.001); // Slower, smoother animation
+      setTime(prevTime => prevTime + deltaTime * 0.001);
       previousTimeRef.current = timestamp;
       requestRef.current = requestAnimationFrame(animate);
     };
@@ -1065,6 +639,7 @@ const DualFormVisualization = ({ darkMode }) => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
     const height = canvas.height;
@@ -1072,397 +647,1036 @@ const DualFormVisualization = ({ darkMode }) => {
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
 
-    // Background
-    ctx.fillStyle = darkMode ? '#1e1e2e' : '#eff1f5';
+    // Colors based on theme
+    const colors = {
+      bg: darkMode ? '#1e293b' : '#f8fafc',
+      primary: '#4361ee',
+      secondary: darkMode ? '#f8fafc' : '#1e293b',
+      accent: '#f72585',
+      highlight: '#06d6a0',
+      muted: darkMode ? '#94a3b8' : '#64748b',
+    };
+
+    // Fill background
+    ctx.fillStyle = colors.bg;
     ctx.fillRect(0, 0, width, height);
 
-    // --- Draw Primal Form Side ---
-    const primalX = width * 0.25;
-    const topY = 50;
-    const boxWidth = width * 0.4;
-    const boxHeight = 120;
+    // Define elements
+    const tokenRadius = 25;
+    const hiddenStateWidth = 100;
+    const hiddenStateHeight = 80;
+    const outputRadius = 25;
 
-    ctx.fillStyle = darkMode ? '#181825' : '#f1f5f9'; // Mantle / Crust
-    ctx.strokeStyle = darkMode ? '#45475a' : '#bcc0cc'; // Surface1
-    ctx.lineWidth = 1;
+    // Positions
+    const centerY = height / 2;
+    const tokenX = 80;
+    const hiddenStateX = width / 2;
+    const outputX = width - 80;
+
+    // Animation state based on time
+    const cycleTime = 5; // seconds per cycle
+    const normalizedTime = (time % cycleTime) / cycleTime;
+    
+    // Animated highlights based on cycle stage
+    const stage = Math.floor(normalizedTime * 5); // 5 stages in the process
+    const stageProgress = (normalizedTime * 5) % 1; // Progress within current stage (0-1)
+
+    // 1. Draw connecting arrows with flow animation
+    // Token to hidden state
+    const arrowOffset = 20 * Math.sin(time * 2) * (stage === 0 ? 1 : 0.3);
+    
     ctx.beginPath();
-    ctx.roundRect(primalX - boxWidth / 2, topY, boxWidth, boxHeight, 8);
-    ctx.fill();
+    ctx.moveTo(tokenX + tokenRadius, centerY);
+    ctx.lineTo(hiddenStateX - hiddenStateWidth/2, centerY + arrowOffset);
+    ctx.strokeStyle = stage === 0 ? colors.accent : colors.muted;
+    ctx.lineWidth = stage === 0 ? 3 : 2;
+    ctx.stroke();
+    
+    // Hidden state to output
+    const outputArrowOffset = 20 * Math.sin(time * 2) * (stage === 4 ? 1 : 0.3);
+    
+    ctx.beginPath();
+    ctx.moveTo(hiddenStateX + hiddenStateWidth/2, centerY + outputArrowOffset);
+    ctx.lineTo(outputX - outputRadius, centerY);
+    ctx.strokeStyle = stage === 4 ? colors.highlight : colors.muted;
+    ctx.lineWidth = stage === 4 ? 3 : 2;
     ctx.stroke();
 
-    ctx.fillStyle = darkMode ? '#cdd6f4' : '#4c4f69'; // Text
-    ctx.font = 'bold 14px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Primal Form (Sequential)', primalX, topY + 25);
-
-    // Simulate sequential processing
-    const numSteps = 5;
-    const stepWidth = boxWidth / (numSteps + 1);
-    const stepY = topY + 70;
-    const currentStep = Math.floor(time * 1.5) % numSteps;
-
-    for (let i = 0; i < numSteps; i++) {
-      const stepX = primalX - boxWidth / 2 + stepWidth * (i + 0.5);
-      const isActive = i === currentStep;
-
-      // Step Box
-      ctx.beginPath();
-      ctx.roundRect(stepX - stepWidth * 0.4, stepY - 15, stepWidth * 0.8, 30, 4);
-      ctx.fillStyle = isActive ? (darkMode ? '#f38ba8' : '#e11d48') // Red
-                      : (darkMode ? '#45475a' : '#e2e8f0'); // Surface1 / Surface0
-      ctx.fill();
-      ctx.strokeStyle = darkMode ? '#6c7086' : '#9ca0b0'; // Overlay0
-      ctx.lineWidth = 0.5;
-      ctx.stroke();
-
-      // Step Text (G_t or W_t)
-      ctx.fillStyle = isActive ? '#11111b' : (darkMode ? '#a6adc8' : '#6c6f85'); // Crust / Subtext0
-      ctx.font = '10px monospace';
-      ctx.fillText(i % 2 === 0 ? `∇ℓ(W${i})` : `W${i+1}`, stepX, stepY);
-
-      // Arrow
-      if (i < numSteps - 1) {
-        const arrowStartX = stepX + stepWidth * 0.4;
-        const arrowEndX = arrowStartX + stepWidth * 0.2;
-        ctx.beginPath();
-        ctx.moveTo(arrowStartX, stepY);
-        ctx.lineTo(arrowEndX, stepY);
-        ctx.strokeStyle = darkMode ? '#6c7086' : '#9ca0b0'; // Overlay0
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        // Arrowhead
-        ctx.beginPath();
-        ctx.moveTo(arrowEndX, stepY);
-        ctx.lineTo(arrowEndX - 4, stepY - 3);
-        ctx.lineTo(arrowEndX - 4, stepY + 3);
-        ctx.closePath();
-        ctx.fillStyle = darkMode ? '#6c7086' : '#9ca0b0';
-        ctx.fill();
+    // 2. Draw hidden state (with update effect)
+    ctx.save();
+    // Apply subtle "update" effect during stages 2-3
+    if (stage >= 2 && stage <= 3) {
+      const shakeAmount = 2 * Math.sin(time * 20) * stageProgress;
+      ctx.translate(shakeAmount, shakeAmount);
+    }
+    
+    // Hidden state background
+    ctx.fillStyle = colors.bg;
+    ctx.strokeStyle = stage >= 2 && stage <= 3 ? colors.accent : colors.primary;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(
+      hiddenStateX - hiddenStateWidth/2, 
+      centerY - hiddenStateHeight/2, 
+      hiddenStateWidth, 
+      hiddenStateHeight, 
+      10
+    );
+    ctx.fill();
+    ctx.stroke();
+    
+    // Matrix visualization inside hidden state
+    const matrixSize = 4;
+    const cellSize = Math.min(hiddenStateWidth, hiddenStateHeight) * 0.6 / matrixSize;
+    const matrixStartX = hiddenStateX - (cellSize * matrixSize) / 2;
+    const matrixStartY = centerY - (cellSize * matrixSize) / 2;
+    
+    for (let i = 0; i < matrixSize; i++) {
+      for (let j = 0; j < matrixSize; j++) {
+        // Matrix values that change during update (stages 2-3)
+        let cellValue;
+        if (stage >= 2 && stage <= 3) {
+          cellValue = Math.sin(time * 3 + i * 0.7 + j * 0.5) * stageProgress;
+        } else {
+          cellValue = Math.sin(time * 0.5 + i * 0.7 + j * 0.5) * 0.5;
+        }
+        
+        const colorIntensity = Math.abs(cellValue);
+        const x = matrixStartX + j * cellSize;
+        const y = matrixStartY + i * cellSize;
+        
+        ctx.fillStyle = cellValue > 0 
+          ? `rgba(67, 97, 238, ${0.3 + colorIntensity * 0.7})` // Blue for positive
+          : `rgba(247, 37, 133, ${0.3 + colorIntensity * 0.7})`; // Pink for negative
+          
+        ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
       }
     }
-    ctx.fillStyle = darkMode ? '#f38ba8' : '#dc2626'; // Red
-    ctx.font = '12px sans-serif';
-    ctx.fillText('Bottleneck: Sequential Ops', primalX, topY + boxHeight + 20);
-
-
-    // --- Draw Dual Form Side ---
-    const dualX = width * 0.75;
-
-    ctx.fillStyle = darkMode ? '#313244' : '#eff6ff'; // Surface0 / Blue-50
-    ctx.strokeStyle = darkMode ? '#89b4fa' : '#1e66f5'; // Blue
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.roundRect(dualX - boxWidth / 2, topY, boxWidth, boxHeight, 8);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = darkMode ? '#cdd6f4' : '#4c4f69'; // Text
-    ctx.font = 'bold 14px sans-serif';
+    
+    // Hidden state label
+    ctx.fillStyle = colors.secondary;
+    ctx.font = 'bold 14px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Dual Form (Parallel Matmuls)', dualX, topY + 25);
+    ctx.fillText('Hidden State (W)', hiddenStateX, centerY - hiddenStateHeight/2 - 10);
+    ctx.restore();
 
-    // Simulate matrix operations
-    const matrixSizeDual = 40;
-    const matrixYDual = topY + 70;
-    const matrixSpacing = 50;
-
-    // Input Matrix X
-    drawMatrix(ctx, dualX - matrixSpacing * 1.5, matrixYDual, matrixSizeDual, time * 2, darkMode, '#fab387', '#fe640b'); // Peach
-    ctx.fillText('X', dualX - matrixSpacing * 1.5, matrixYDual + matrixSizeDual + 10);
-
-    // Weight Matrix W
-    drawMatrix(ctx, dualX - matrixSpacing * 0.5, matrixYDual, matrixSizeDual, time * 1.5, darkMode, '#cba6f7', '#8839ef'); // Mauve
-    ctx.fillText('W', dualX - matrixSpacing * 0.5, matrixYDual + matrixSizeDual + 10);
-
-    // Output Matrix Z
-    drawMatrix(ctx, dualX + matrixSpacing * 0.5, matrixYDual, matrixSizeDual, time * 2.5, darkMode, '#a6e3a1', '#40a02b'); // Green
-    ctx.fillText('Z', dualX + matrixSpacing * 0.5, matrixYDual + matrixSizeDual + 10);
-
-    // Operation Symbols
-    ctx.font = 'bold 20px sans-serif';
-    ctx.fillStyle = darkMode ? '#a6adc8' : '#6c6f85'; // Subtext0
-    ctx.fillText('⊗', dualX - matrixSpacing, matrixYDual + matrixSizeDual / 2); // Matmul symbol
-    ctx.fillText('=', dualX, matrixYDual + matrixSizeDual / 2);
-
-    ctx.fillStyle = darkMode ? '#a6e3a1' : '#16a34a'; // Green
-    ctx.font = '12px sans-serif';
-    ctx.fillText('Advantage: Parallel & Hardware Optimized', dualX, topY + boxHeight + 20);
-
-    // --- Connecting Arrow ---
-    const arrowStartY = topY + boxHeight / 2;
-    const arrowEndY = arrowStartY;
-    const arrowStartX = primalX + boxWidth / 2 + 10;
-    const arrowEndX = dualX - boxWidth / 2 - 10;
-    const controlY = arrowStartY - 40; // Curve control point
-
+    // 3. Draw input token
     ctx.beginPath();
-    ctx.moveTo(arrowStartX, arrowStartY);
-    ctx.quadraticCurveTo((arrowStartX + arrowEndX) / 2, controlY, arrowEndX, arrowEndY);
-    ctx.strokeStyle = darkMode ? '#94e2d5' : '#179299'; // Teal
+    ctx.arc(tokenX, centerY, tokenRadius, 0, Math.PI * 2);
+    ctx.fillStyle = stage === 0 ? 'rgba(247, 37, 133, 0.7)' : 'rgba(247, 37, 133, 0.4)';
+    ctx.fill();
+    ctx.strokeStyle = colors.accent;
     ctx.lineWidth = 2;
     ctx.stroke();
+    
+    // Token label
+    ctx.fillStyle = colors.secondary;
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Input Token', tokenX, centerY - tokenRadius - 10);
+    ctx.font = 'bold 18px monospace';
+    ctx.fillText('xₜ', tokenX, centerY + 5);
 
-    // Arrowhead for connecting arrow
-    const angle = Math.atan2(0, arrowEndX - arrowStartX); // Angle is 0 here
-    const arrowSize = 8;
+    // 4. Draw output token
     ctx.beginPath();
-    ctx.moveTo(arrowEndX, arrowEndY);
-    ctx.lineTo(arrowEndX - arrowSize * Math.cos(angle - Math.PI / 6), arrowEndY - arrowSize * Math.sin(angle - Math.PI / 6));
-    ctx.lineTo(arrowEndX - arrowSize * Math.cos(angle + Math.PI / 6), arrowEndY - arrowSize * Math.sin(angle + Math.PI / 6));
-    ctx.closePath();
-    ctx.fillStyle = darkMode ? '#94e2d5' : '#179299'; // Teal
+    ctx.arc(outputX, centerY, outputRadius, 0, Math.PI * 2);
+    ctx.fillStyle = stage === 4 ? 'rgba(6, 214, 160, 0.7)' : 'rgba(6, 214, 160, 0.4)';
     ctx.fill();
+    ctx.strokeStyle = colors.highlight;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Output label
+    ctx.fillStyle = colors.secondary;
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Output', outputX, centerY - outputRadius - 10);
+    ctx.font = 'bold 18px monospace';
+    ctx.fillText('zₜ', outputX, centerY + 5);
 
-    ctx.fillStyle = darkMode ? '#94e2d5' : '#179299'; // Teal
-    ctx.font = 'italic 12px sans-serif';
-    ctx.fillText('Equivalent Result, Faster Execution', width / 2, controlY + 10);
+    // 5. Draw gradient calculation (visible only in stages 1-2)
+    if (stage === 1 || stage === 2) {
+      const gradX = (hiddenStateX + tokenX) / 2;
+      const gradY = centerY + 60;
+      const gradSize = 40 + 10 * Math.sin(time * 4) * stageProgress;
+      
+      ctx.fillStyle = 'rgba(247, 37, 133, 0.15)';
+      ctx.beginPath();
+      ctx.arc(gradX, gradY, gradSize, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = colors.accent;
+      ctx.font = `bold ${16 + 4 * stageProgress}px monospace`;
+      ctx.textAlign = 'center';
+      ctx.fillText('∇ℓ', gradX, gradY + 6);
+      
+      // Connecting line to hidden state
+      ctx.beginPath();
+      ctx.moveTo(gradX, gradY - gradSize * 0.7);
+      ctx.lineTo(hiddenStateX, centerY + hiddenStateHeight/2 - 10);
+      ctx.strokeStyle = colors.accent;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
 
+    // 6. Stage indicator
+    ctx.fillStyle = colors.secondary;
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'center';
+    const stageTexts = [
+      "1. Process Input Token",
+      "2. Calculate Loss & Gradient",
+      "3. Update Hidden State Weights",
+      "4. Apply Updated Weights",
+      "5. Generate Output"
+    ];
+    ctx.fillText(stageTexts[stage], width / 2, height - 20);
 
   }, [time, darkMode]);
 
-  // Helper to draw a matrix visualization
-  const drawMatrix = (ctx, x, y, size, timeOffset, darkMode, colorDark, colorLight) => {
-      const cellSize = size / 4;
-      ctx.save();
-      ctx.translate(x - size / 2, y - size / 2);
-      for (let i = 0; i < 4; i++) {
-          for (let j = 0; j < 4; j++) {
-              const value = Math.sin(timeOffset + i * 0.5 + j * 0.3);
-              const alpha = 0.4 + Math.abs(value) * 0.5;
-              ctx.fillStyle = darkMode ? `${colorDark}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`
-                                       : `${colorLight}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
-              ctx.fillRect(j * cellSize, i * cellSize, cellSize - 1, cellSize - 1);
-          }
-      }
-      ctx.strokeStyle = darkMode ? colorDark : colorLight;
-      ctx.lineWidth = 0.5;
-      ctx.strokeRect(0, 0, size, size);
-      ctx.restore();
-  };
-
-
   return (
-    <canvas
-      ref={canvasRef}
-      width={700}
-      height={250} // Reduced height
-      className="technical-canvas"
-    />
+    <div className="process-visualization">
+      <canvas 
+        ref={canvasRef}
+        width={700}
+        height={260}
+        className="process-canvas"
+      />
+    </div>
   );
 };
 
-
-// Add styles (Completed and Refined)
-const styles = `
-  /* Base styles with Catppuccin theme */
-  :root {
-    /* Light theme (Latte) */
-    --rosewater-l: #dc8a78; --flamingo-l: #dd7878; --pink-l: #ea76cb; --mauve-l: #8839ef; --red-l: #d20f39; --maroon-l: #e64553; --peach-l: #fe640b; --yellow-l: #df8e1d; --green-l: #40a02b; --teal-l: #179299; --sky-l: #04a5e5; --sapphire-l: #209fb5; --blue-l: #1e66f5; --lavender-l: #7287fd;
-    --text-l: #4c4f69; --subtext1-l: #5c5f77; --subtext0-l: #6c6f85; --overlay2-l: #7c7f93; --overlay1-l: #8c8fa1; --overlay0-l: #9ca0b0; --surface2-l: #acb0be; --surface1-l: #bcc0cc; --surface0-l: #ccd0da; --base-l: #eff1f5; --mantle-l: #e6e9ef; --crust-l: #dce0e8;
+// Add these styles to the existing styles:
+const processStyles = `
+  .process-visualization {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
   }
 
-  .dark-theme {
-    /* Dark theme (Mocha) */
-    --rosewater-d: #f5e0dc; --flamingo-d: #f2cdcd; --pink-d: #f5c2e7; --mauve-d: #cba6f7; --red-d: #f38ba8; --maroon-d: #eba0ac; --peach-d: #fab387; --yellow-d: #f9e2af; --green-d: #a6e3a1; --teal-d: #94e2d5; --sky-d: #89dceb; --sapphire-d: #74c7ec; --blue-d: #89b4fa; --lavender-d: #b4befe;
-    --text-d: #cdd6f4; --subtext1-d: #bac2de; --subtext0-d: #a6adc8; --overlay2-d: #9399b2; --overlay1-d: #7f849c; --overlay0-d: #6c7086; --surface2-d: #585b70; --surface1-d: #45475a; --surface0-d: #313244; --base-d: #1e1e2e; --mantle-d: #181825; --crust-d: #11111b;
-
-    --primary: var(--blue-d); --secondary: var(--mauve-d); --accent: var(--pink-d); --success: var(--green-d); --warning: var(--yellow-d); --danger: var(--red-d);
-    --bg: var(--base-d); --bg-alt: var(--mantle-d); --bg-alt2: var(--surface0-d); --border: var(--surface1-d); --shadow: rgba(0, 0, 0, 0.3); --card-bg: var(--mantle-d); --card-border: var(--surface0-d); --text: var(--text-d); --text-subtle: var(--subtext0-d); --text-muted: var(--overlay0-d);
+  .process-canvas {
+    max-width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
-  .light-theme {
-    --primary: var(--blue-l); --secondary: var(--mauve-l); --accent: var(--pink-l); --success: var(--green-l); --warning: var(--yellow-l); --danger: var(--red-l);
-    --bg: var(--base-l); --bg-alt: var(--mantle-l); --bg-alt2: var(--surface0-l); --border: var(--surface1-l); --shadow: rgba(76, 79, 105, 0.1); --card-bg: #ffffff; --card-border: var(--crust-l); --text: var(--text-l); --text-subtle: var(--subtext0-l); --text-muted: var(--overlay0-l);
+  .steps-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    line-height: 1.6;
-    color: var(--text);
+  .step-card {
+    display: flex;
+    align-items: flex-start;
     background-color: var(--bg);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    font-size: 16px;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .step-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
   }
 
-  @supports (font-variation-settings: normal) {
-    body { font-family: 'InterVariable', sans-serif; }
+  .step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
   }
 
-  .app-container { min-height: 100vh; }
-
-  /* Header */
-  .app-header {
-    background-color: var(--card-bg);
-    border-bottom: 1px solid var(--card-border);
-    position: sticky; top: 0; z-index: 1000;
-    padding: 0.5rem 1rem;
-    box-shadow: 0 1px 3px var(--shadow);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+  .step-content {
+    flex: 1;
   }
-  .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
-  .title { font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 600; color: var(--text); }
-  .header-controls { display: flex; align-items: center; gap: 0.5rem; }
-  .theme-toggle, .mobile-menu-toggle {
-    background: none; border: none; color: var(--primary); cursor: pointer; padding: 0.35rem;
-    display: flex; align-items: center; justify-content: center; border-radius: 50%;
-    transition: background-color 0.2s ease, color 0.2s ease;
+
+  .step-content h4 {
+    margin-top: 0.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
   }
-  .theme-toggle:hover, .mobile-menu-toggle:hover { background-color: var(--bg-alt); }
-  .icon { width: 1.25rem; height: 1.25rem; }
-  .icon-inline { display: inline-block; vertical-align: middle; margin-right: 0.25em; font-size: 1.1em; }
 
-  /* Navigation */
-  .main-nav { max-width: 1200px; margin: 0.25rem auto 0; }
-  .main-nav ul { display: flex; list-style: none; gap: 0.25rem; flex-wrap: wrap; justify-content: center; }
-  .main-nav li { position: relative; }
-  .main-nav button {
-    background: none; border: none; color: var(--text-subtle); cursor: pointer;
-    padding: 0.5rem 0.75rem; font-size: 0.9rem; font-weight: 500;
-    transition: color 0.2s ease; white-space: nowrap; border-radius: 4px;
+  .step-content p {
+    color: var(--text-secondary);
+    margin-bottom: 0;
+    font-size: 0.95rem;
   }
-  .main-nav li.active button { color: var(--primary); background-color: var(--bg-alt); }
-  .main-nav li:not(.active) button:hover { color: var(--primary); background-color: var(--bg-alt); }
 
-  /* Mobile Navigation Specifics */
-  .mobile-menu-toggle { display: none; } /* Hidden by default */
-  .mobile-nav { display: none; } /* Hidden by default */
-
-  /* Main Content */
-  .main-content { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; }
-
-  /* Section common styles */
-  .section { margin-bottom: 2.5rem; }
-  .section-card {
-    background-color: var(--card-bg); border-radius: 8px;
-    box-shadow: 0 2px 10px var(--shadow); padding: 1.5rem;
-    border: 1px solid var(--card-border);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+  .process-summary {
+    margin-top: 3rem;
   }
-  .section h2 { font-size: clamp(1.4rem, 4vw, 1.75rem); margin-bottom: 0.5rem; font-weight: 600; color: var(--text); }
-  .section h3 { font-size: clamp(1.1rem, 3vw, 1.25rem); margin-top: 1.5rem; margin-bottom: 0.75rem; font-weight: 600; color: var(--primary); }
-  .section h4 { font-size: 1rem; margin-bottom: 0.5rem; font-weight: 600; color: var(--secondary); }
-  .section p { margin-bottom: 1rem; color: var(--text); font-size: 0.95rem; }
-  .section-subtitle { color: var(--text-subtle); margin-top: -0.25rem; margin-bottom: 1.5rem; font-size: 1rem; }
-  .diagram-caption, .animation-note, .process-note { font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 0.5rem; font-style: italic; }
 
-  /* Grid layouts */
-  .content-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-  .features-grid, .insights-grid, .limitations-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
-  .feature-card, .insight-card, .limitation-card, .tech-card { background-color: var(--bg-alt); padding: 1rem; border-radius: 6px; border: 1px solid var(--border); }
-  .tech-card { margin-bottom: 1rem; }
-
-  /* Intro section */
-  .intro-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: center; }
-  .highlight-box { background-color: var(--bg-alt2); border-left: 4px solid var(--primary); padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
-  .highlight-box h3 { color: var(--primary); margin-top: 0; }
-  .diagram-container { text-align: center; }
-
-  /* Neural section */
-  .section-header { background: var(--gradient, linear-gradient(90deg, var(--mauve), var(--lavender))); color: #fff; padding: 1.5rem; border-radius: 8px 8px 0 0; margin: -1.5rem -1.5rem 1.5rem -1.5rem; }
-  .dark-theme .section-header { --gradient: linear-gradient(90deg, var(--mauve-d), var(--lavender-d)); }
-  .light-theme .section-header { --gradient: linear-gradient(90deg, var(--mauve-l), var(--lavender-l)); }
-  .section-header h2 { color: #fff; margin-bottom: 0.25rem; }
-  .section-header p { color: rgba(255, 255, 255, 0.85); font-size: 0.9rem; margin-bottom: 0; }
-  .controls-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
-  .model-selector span, .speed-label { color: var(--text-subtle); font-size: 0.9rem; font-weight: 500; }
-  .button-group { display: flex; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 2px var(--shadow); }
-  .button-group button { padding: 0.4rem 0.8rem; border: none; background-color: var(--bg-alt); color: var(--text); cursor: pointer; font-size: 0.85rem; transition: background-color 0.2s ease, color 0.2s ease; border-right: 1px solid var(--border); }
-  .button-group button:last-child { border-right: none; }
-  .button-group button.active { background-color: var(--primary); color: #fff; }
-  .button-group button:not(.active):hover { background-color: var(--bg-alt2); }
-  .animation-controls { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-  .control-button { width: 2.25rem; height: 2.25rem; } /* Slightly larger */
-  .speed-control { display: flex; align-items: center; gap: 0.5rem; }
-  .speed-slider { width: 8rem; height: 4px; background-color: var(--border); border-radius: 2px; appearance: none; outline: none; cursor: pointer; }
-  .speed-slider::-webkit-slider-thumb { appearance: none; width: 1rem; height: 1rem; background-color: var(--primary); border-radius: 50%; cursor: pointer; transition: background-color 0.2s ease; }
-  .speed-slider::-moz-range-thumb { width: 1rem; height: 1rem; background-color: var(--primary); border-radius: 50%; cursor: pointer; border: none; }
-  .speed-value { font-size: 0.85rem; color: var(--text-subtle); min-width: 2.5em; text-align: right; }
-  .neural-visualization, .process-visualization, .optimization-visual { width: 100%; margin-bottom: 1rem; display: flex; justify-content: center; }
-  .neural-canvas, .process-canvas, .technical-canvas { max-width: 100%; height: auto; border-radius: 6px; border: 1px solid var(--border); background-color: var(--bg); }
-  .description-box { background-color: var(--bg-alt); padding: 1rem; border-radius: 6px; color: var(--text); font-size: 0.9rem; border: 1px solid var(--border); }
-
-  /* Process section */
-  .process-steps { display: grid; gap: 1rem; margin-top: 1.5rem; }
-  .step-card { display: flex; align-items: flex-start; gap: 1rem; background-color: var(--bg-alt); padding: 1rem; border-radius: 6px; border: 1px solid var(--border); }
-  .step-number { flex-shrink: 0; width: 2rem; height: 2rem; background-color: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; }
-  .step-content h4 { margin-top: 0.1rem; margin-bottom: 0.25rem; color: var(--primary); font-size: 1rem; }
-  .step-content p { font-size: 0.9rem; margin-bottom: 0; color: var(--text-subtle); }
-  .math-formula { font-family: 'Latin Modern Math', 'Cambria Math', serif; background-color: var(--bg-alt2); padding: 0.3rem 0.6rem; border-radius: 4px; margin-top: 0.5rem; font-size: 0.9em; overflow-x: auto; white-space: nowrap; border: 1px solid var(--border); }
-  .formula-box { margin-top: 0.5rem; }
-  .formula-box span { font-size: 0.85rem; color: var(--text-subtle); display: block; margin-bottom: 0.2rem; }
-  .formula-box small { font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.2rem; }
-
-  /* Performance Section */
-  .chart-container { margin-bottom: 2rem; }
-  .chart-description { font-size: 0.9rem; color: var(--text-subtle); text-align: center; margin-bottom: 1rem; }
-  .context-slider { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
-  .context-slider label { font-size: 0.9rem; color: var(--text-subtle); }
-  .range-slider { width: 15rem; max-width: 60%; height: 4px; background-color: var(--border); border-radius: 2px; appearance: none; outline: none; cursor: pointer; }
-  .range-slider::-webkit-slider-thumb { appearance: none; width: 1rem; height: 1rem; background-color: var(--primary); border-radius: 50%; cursor: pointer; }
-  .range-slider::-moz-range-thumb { width: 1rem; height: 1rem; background-color: var(--primary); border-radius: 50%; cursor: pointer; border: none; }
-  .context-value { font-size: 0.9rem; font-weight: 500; color: var(--primary); min-width: 3.5em; text-align: right; }
-  .recharts-tooltip-wrapper { outline: none; } /* Remove focus outline */
-
-  /* Technical Section */
-  .tech-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: flex-start; }
-  .limitations-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
-  .limitations-section h3 { color: var(--warning); } /* Use warning color */
-  .limitation-card h4 { color: var(--warning); }
-
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .title { font-size: 1.1rem; }
-    .desktop-nav { display: none; } /* Hide desktop nav on mobile */
-    .mobile-menu-toggle { display: flex; } /* Show hamburger */
-    .mobile-nav {
-      display: block;
-      position: absolute;
-      top: 100%; /* Position below header */
-      left: 0;
-      right: 0;
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--card-border);
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-      box-shadow: 0 4px 6px var(--shadow);
+  @media (min-width: 768px) {
+    .steps-container {
+      grid-template-columns: 1fr 1fr;
     }
-    .mobile-nav.open { max-height: 500px; /* Or enough height */ }
-    .mobile-nav ul { flex-direction: column; padding: 0.5rem 0; gap: 0; }
-    .mobile-nav li { width: 100%; }
-    .mobile-nav button { width: 100%; text-align: left; padding: 0.75rem 1rem; border-radius: 0; }
-    .mobile-nav li.active button { background-color: var(--bg-alt); }
-
-    .main-content { margin-top: 1rem; padding: 0 0.75rem; }
-    .section-card { padding: 1rem; }
-    .controls-row { flex-direction: column; align-items: stretch; }
-    .model-selector, .animation-controls { width: 100%; justify-content: center; }
-    .speed-slider { width: 10rem; }
-    .range-slider { width: 10rem; }
-    .process-steps { grid-template-columns: 1fr; } /* Stack steps */
-    .step-card { flex-direction: column; align-items: center; text-align: center; }
-    .step-number { margin-bottom: 0.5rem; }
-    .tech-grid { grid-template-columns: 1fr; } /* Stack tech details */
-    .optimization-visual { order: -1; margin-bottom: 1.5rem; } /* Move visual above text */
+    
+    .steps-container > div:last-child:nth-child(odd) {
+      grid-column: 1 / 3;
+    }
   }
 
-  @media (min-width: 769px) {
-    .main-nav.desktop-nav { display: block; } /* Show desktop nav */
+  @media (max-width: 640px) {
+    .process-canvas {
+      height: 220px;
+    }
+    
+    .step-card {
+      padding: 1rem;
+    }
+    
+    .step-number {
+      width: 2rem;
+      height: 2rem;
+      font-size: 1rem;
+      margin-right: 0.75rem;
+    }
   }
 `;
 
-// Inject styles
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = styles;
-document.head.appendChild(styleSheet);
+// Append process styles to main styles
+document.querySelector('style').textContent += processStyles;
 
-// Add Google Font (Inter)
-const fontLink = document.createElement('link');
-fontLink.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Variable:wght@400..600&display=swap";
-fontLink.rel = "stylesheet";
-document.head.appendChild(fontLink);
+// ... rest of existing code ...
+
+// Performance Section (Redesigned)
+const PerformanceSection = ({ darkMode }) => {
+  const [contextLength, setContextLength] = useState(4096);
+  const maxContext = 32768;
+
+  const handleContextChange = (e) => {
+    setContextLength(Number(e.target.value));
+  };
+
+  // Generate performance data based on context length
+  const generatePerformanceData = useCallback(() => {
+    // Simulation of performance data
+    const baseTransformerPerf = 75;
+    const baseTTTPerf = 65;
+    
+    return Array.from({ length: 6 }, (_, i) => {
+      const ctxLength = Math.pow(2, i + 10); // 1k, 2k, 4k, 8k, 16k, 32k
+      
+      // Simulated accuracy metrics
+      const transformerAcc = baseTransformerPerf + 5 * Math.log2(ctxLength / 1024) - 0.5 * Math.log2(ctxLength / 8192);
+      const tttAcc = baseTTTPerf + 8 * Math.log2(ctxLength / 1024); // TTT benefits more from context
+      
+      // Simulated latency metrics (higher is worse)
+      const transformerLatency = Math.pow(ctxLength / 1024, 1.9); // Quadratic growth
+      const tttLatency = (ctxLength / 1024) * 5; // Linear growth
+      
+      return {
+        contextLength: ctxLength,
+        contextLengthLabel: `${(ctxLength / 1024).toFixed(0)}K`,
+        transformerAccuracy: Math.min(100, transformerAcc).toFixed(1),
+        tttAccuracy: Math.min(100, tttAcc).toFixed(1),
+        transformerLatency: transformerLatency.toFixed(0),
+        tttLatency: tttLatency.toFixed(0),
+      };
+    });
+  }, []);
+
+  const performanceData = useMemo(() => generatePerformanceData(), [generatePerformanceData]);
+
+  // Filtered data based on selected context length
+  const filteredData = useMemo(() => {
+    return performanceData.filter(item => item.contextLength <= contextLength);
+  }, [performanceData, contextLength]);
+
+  return (
+    <section className="section performance-section">
+      <div className="section-card">
+        <h2>Performance Analysis</h2>
+        <p className="section-subtitle">How TTT scales with increasing context length compared to Transformers</p>
+        
+        <div className="performance-controls">
+          <label htmlFor="context-slider" className="control-label">
+            Context Length (up to {maxContext / 1024}K tokens)
+          </label>
+          <div className="context-slider-container">
+            <input
+              id="context-slider"
+              type="range"
+              min="1024"
+              max={maxContext}
+              step="1024"
+              value={contextLength}
+              onChange={handleContextChange}
+              className="range-slider"
+            />
+            <span className="context-value">{(contextLength / 1024).toFixed(0)}K</span>
+          </div>
+        </div>
+
+        <div className="performance-metrics">
+          <div className="metric-card">
+            <div className="metric-header">
+              <h3>Accuracy</h3>
+              <div className="metric-legend">
+                <div className="legend-item">
+                  <span className="legend-marker transformer"></span>
+                  <span>Transformer</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-marker ttt"></span>
+                  <span>TTT</span>
+                </div>
+              </div>
+            </div>
+            <div className="chart-container">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart
+                  data={filteredData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#334155" : "#e2e8f0"} />
+                  <XAxis 
+                    dataKey="contextLengthLabel" 
+                    stroke={darkMode ? "#94a3b8" : "#64748b"}
+                    tick={{ fontSize: 12 }}
+                    label={{ 
+                      value: 'Context Length', 
+                      position: 'insideBottom', 
+                      offset: -10,
+                      fill: darkMode ? "#cbd5e1" : "#4b5563",
+                      fontSize: 12
+                    }}
+                  />
+                  <YAxis 
+                    stroke={darkMode ? "#94a3b8" : "#64748b"}
+                    tick={{ fontSize: 12 }}
+                    domain={[60, 100]}
+                    label={{ 
+                      value: 'Accuracy (%)', 
+                      angle: -90, 
+                      position: 'insideLeft',
+                      fill: darkMode ? "#cbd5e1" : "#4b5563",
+                      fontSize: 12
+                    }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: darkMode ? "#1e293b" : "#ffffff",
+                      borderColor: darkMode ? "#334155" : "#e2e8f0",
+                      color: darkMode ? "#f8fafc" : "#1e293b"
+                    }}
+                  />
+                  <Legend verticalAlign="top" height={36} />
+                  <Line
+                    type="monotone"
+                    dataKey="transformerAccuracy"
+                    name="Transformer"
+                    stroke={darkMode ? "#a78bfa" : "#7c3aed"}
+                    strokeWidth={2}
+                    activeDot={{ r: 7 }}
+                    dot={{ r: 4 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="tttAccuracy"
+                    name="TTT"
+                    stroke={darkMode ? "#4ade80" : "#10b981"}
+                    strokeWidth={2}
+                    activeDot={{ r: 7 }}
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="metric-card">
+            <div className="metric-header">
+              <h3>Latency</h3>
+              <div className="metric-legend">
+                <div className="legend-item">
+                  <span className="legend-marker transformer"></span>
+                  <span>Transformer</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-marker ttt"></span>
+                  <span>TTT</span>
+                </div>
+              </div>
+            </div>
+            <div className="chart-container">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart
+                  data={filteredData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#334155" : "#e2e8f0"} />
+                  <XAxis 
+                    dataKey="contextLengthLabel" 
+                    stroke={darkMode ? "#94a3b8" : "#64748b"}
+                    tick={{ fontSize: 12 }}
+                    label={{ 
+                      value: 'Context Length', 
+                      position: 'insideBottom', 
+                      offset: -10,
+                      fill: darkMode ? "#cbd5e1" : "#4b5563",
+                      fontSize: 12
+                    }}
+                  />
+                  <YAxis 
+                    stroke={darkMode ? "#94a3b8" : "#64748b"}
+                    tick={{ fontSize: 12 }}
+                    label={{ 
+                      value: 'Relative Latency', 
+                      angle: -90, 
+                      position: 'insideLeft',
+                      fill: darkMode ? "#cbd5e1" : "#4b5563",
+                      fontSize: 12
+                    }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: darkMode ? "#1e293b" : "#ffffff",
+                      borderColor: darkMode ? "#334155" : "#e2e8f0",
+                      color: darkMode ? "#f8fafc" : "#1e293b"
+                    }}
+                  />
+                  <Legend verticalAlign="top" height={36} />
+                  <Line
+                    type="monotone"
+                    dataKey="transformerLatency"
+                    name="Transformer"
+                    stroke={darkMode ? "#a78bfa" : "#7c3aed"}
+                    strokeWidth={2}
+                    activeDot={{ r: 7 }}
+                    dot={{ r: 4 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="tttLatency"
+                    name="TTT"
+                    stroke={darkMode ? "#4ade80" : "#10b981"}
+                    strokeWidth={2}
+                    activeDot={{ r: 7 }}
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        <div className="performance-insights">
+          <h3>Key Insights</h3>
+          <div className="card-grid">
+            <div className="info-card">
+              <h4>Scaling Efficiency</h4>
+              <p>TTT scales <strong>linearly</strong> with context length (O(n)), while Transformers scale <strong>quadratically</strong> (O(n²)), making TTT significantly more efficient for longer contexts.</p>
+            </div>
+            <div className="info-card">
+              <h4>Accuracy Growth</h4>
+              <p>TTT's accuracy continues to improve with longer contexts, eventually outperforming Transformers as context length increases beyond 8K tokens.</p>
+            </div>
+            <div className="info-card">
+              <h4>Memory Usage</h4>
+              <p>TTT uses a constant amount of memory regardless of context length, while Transformers' memory usage grows quadratically with sequence length.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Add performance section styles
+const performanceStyles = `
+  .performance-controls {
+    margin-bottom: 2rem;
+  }
+
+  .control-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .context-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .range-slider {
+    flex: 1;
+    height: 6px;
+    appearance: none;
+    background-color: var(--border);
+    border-radius: 3px;
+    outline: none;
+  }
+
+  .range-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+  }
+
+  .range-slider::-webkit-slider-thumb:hover {
+    background-color: var(--color-accent);
+  }
+
+  .range-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+  }
+
+  .range-slider::-moz-range-thumb:hover {
+    background-color: var(--color-accent);
+  }
+
+  .context-value {
+    font-weight: 600;
+    color: var(--color-primary);
+    min-width: 3.5rem;
+    text-align: center;
+    padding: 0.25rem 0.75rem;
+    background-color: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    border-radius: 1rem;
+  }
+
+  .performance-metrics {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .metric-card {
+    background-color: var(--bg);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+
+  .metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .metric-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .metric-legend {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .legend-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .legend-marker.transformer {
+    background-color: #7c3aed;
+  }
+
+  .legend-marker.ttt {
+    background-color: #10b981;
+  }
+
+  .chart-container {
+    width: 100%;
+    height: 300px;
+  }
+
+  .performance-insights {
+    margin-top: 2.5rem;
+  }
+
+  .performance-insights h3 {
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .performance-metrics {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .metric-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    
+    .chart-container {
+      height: 250px;
+    }
+  }
+`;
+
+// Append performance styles to main styles
+document.querySelector('style').textContent += performanceStyles;
+
+// Technical Details Section 
+const TechnicalSection = ({ darkMode }) => {
+  return (
+    <section className="section technical-section">
+      <div className="section-card">
+        <h2>Technical Deep Dive</h2>
+        <p className="section-subtitle">Understanding the implementation and theoretical foundations of TTT</p>
+
+        <div className="technical-grid">
+          <div className="technical-content">
+            <div className="tech-card architecture-card">
+              <h3>Architecture Comparison</h3>
+              
+              <div className="comparison-table-container">
+                <table className="comparison-table">
+                  <thead>
+                    <tr>
+                      <th>Model Type</th>
+                      <th>Hidden State</th>
+                      <th>Complexity</th>
+                      <th>Memory Usage</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>RNN</td>
+                      <td>Fixed vector</td>
+                      <td>O(n)</td>
+                      <td>Constant</td>
+                    </tr>
+                    <tr>
+                      <td>Transformer</td>
+                      <td>Full history (KV cache)</td>
+                      <td>O(n²)</td>
+                      <td>O(n)</td>
+                    </tr>
+                    <tr className="highlight-row">
+                      <td>TTT</td>
+                      <td>Learnable model</td>
+                      <td>O(n)</td>
+                      <td>Constant</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="tech-card formula-card">
+              <h3>Mathematical Foundation</h3>
+              
+              <div className="formula-container">
+                <div className="formula-box">
+                  <div className="formula-label">Update Rule</div>
+                  <div className="formula">Wₜ = Wₜ₋₁ - η∇ℓ(Wₜ₋₁; xₜ)</div>
+                  <div className="formula-description">
+                    The hidden state W is updated using gradient descent on a self-supervised loss ℓ computed on the current token xₜ.
+                  </div>
+                </div>
+                
+                <div className="formula-box">
+                  <div className="formula-label">Self-Supervised Task</div>
+                  <div className="formula">ℓ(W; x) = L(f(mask(x); W), unmask(x))</div>
+                  <div className="formula-description">
+                    A common approach is masked prediction: use part of the token to predict the masked part.
+                  </div>
+                </div>
+                
+                <div className="formula-box">
+                  <div className="formula-label">Output Generation</div>
+                  <div className="formula">zₜ = f(xₜ; Wₜ)</div>
+                  <div className="formula-description">
+                    The output is computed using the updated hidden state and the current input token.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="tech-card implementations-card">
+            <h3>Implementation Variants</h3>
+            
+            <div className="variant-list">
+              <div className="variant-item">
+                <div className="variant-header">
+                  <h4>TTT-Linear</h4>
+                  <span className="variant-tag">Faster</span>
+                </div>
+                <p>Hidden state is a linear layer (matrix W and bias b) updated via gradient descent. Simpler update leads to lower latency.</p>
+                <pre className="code-snippet">
+                  <code>W = W - lr * grad_W</code>
+                  <code>b = b - lr * grad_b</code>
+                </pre>
+              </div>
+              
+              <div className="variant-item">
+                <div className="variant-header">
+                  <h4>TTT-MLP</h4>
+                  <span className="variant-tag">More Expressive</span>
+                </div>
+                <p>Hidden state is a multi-layer perceptron with non-linearities. More expressive but with higher computational cost.</p>
+                <pre className="code-snippet">
+                  <code>for layer in mlp.layers:</code>
+                  <code>  layer.W = layer.W - lr * grad(layer.W)</code>
+                  <code>  layer.b = layer.b - lr * grad(layer.b)</code>
+                </pre>
+              </div>
+              
+              <div className="variant-item">
+                <div className="variant-header">
+                  <h4>TTT-Online</h4>
+                  <span className="variant-tag">Experimental</span>
+                </div>
+                <p>Continuously update not just W but also the encoder and decoder during inference, adapting to domain shifts.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="limitations-section">
+          <h3>Limitations & Future Work</h3>
+          <div className="card-grid">
+            <div className="info-card limitation-card">
+              <h4>Initialization Sensitivity</h4>
+              <p>The system's performance is sensitive to initial hidden state values. Poor initialization can lead to slow convergence.</p>
+            </div>
+            <div className="info-card limitation-card">
+              <h4>Additional Latency</h4>
+              <p>While computational complexity is lower, the gradient computation adds some latency compared to traditional RNNs.</p>
+            </div>
+            <div className="info-card limitation-card">
+              <h4>Self-Supervised Task Design</h4>
+              <p>Performance heavily depends on the design of the self-supervised task, which may require domain expertise.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Add technical section styles
+const technicalStyles = `
+  .technical-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .tech-card {
+    background-color: var(--bg);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+  }
+
+  .tech-card h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .comparison-table-container {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .comparison-table th, .comparison-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comparison-table th {
+    font-weight: 600;
+    color: var(--text);
+    background-color: var(--card);
+  }
+
+  .comparison-table td {
+    color: var(--text-secondary);
+  }
+
+  .comparison-table .highlight-row {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .comparison-table .highlight-row td {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .formula-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .formula-box {
+    border-left: 3px solid var(--color-primary);
+    padding-left: 1rem;
+  }
+
+  .formula-label {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .formula {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    padding: 0.75rem 1rem;
+    background-color: var(--card);
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .formula-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .variant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .variant-item {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+  }
+
+  .variant-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .variant-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .variant-header h4 {
+    margin: 0;
+  }
+
+  .variant-tag {
+    padding: 0.25rem 0.75rem;
+    background-color: var(--card);
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .code-snippet {
+    background-color: var(--card);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    overflow-x: auto;
+  }
+
+  .code-snippet code {
+    display: block;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .limitations-section {
+    margin-top: 3rem;
+  }
+
+  .limitation-card {
+    border-left: 3px solid var(--color-warning);
+  }
+
+  .limitations-section h3 {
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .technical-grid {
+      grid-template-columns: 1.5fr 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .formula {
+      font-size: 0.9rem;
+      padding: 0.6rem 0.8rem;
+    }
+    
+    .comparison-table th, .comparison-table td {
+      padding: 0.6rem 0.75rem;
+      font-size: 0.85rem;
+    }
+  }
+`;
+
+// Append technical styles to main styles
+document.querySelector('style').textContent += technicalStyles;
+
+// Add Google Font for code
+const codeFont = document.createElement('link');
+codeFont.href = "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap";
+codeFont.rel = "stylesheet";
+document.head.appendChild(codeFont);
 
 export default TTTVisualization;
